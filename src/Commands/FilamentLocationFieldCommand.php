@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Damarev\FilamentLocationField\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class FilamentLocationFieldCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'filament-location-field';
 
     public $description = 'My command';
 
