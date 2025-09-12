@@ -1,6 +1,6 @@
 <?php
 
-// translations for Damarev/FilamentLocationField
 return [
-    //
+    'search_by_address' => 'Search by address',
+    'geolocate_address' => 'Geolocate address',
 ];

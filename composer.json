@@ -23,8 +23,8 @@
     ],
     "require": {
         "php": "^8.2",
-        "filament/filament": "^4.0",
-        "spatie/laravel-package-tools": "^1.15.0",
+        "filament/filament": "^3.0|^4.0",
+        "spatie/laravel-package-tools": "^1.15.0"
     },
     "require-dev": {
         "nunomaduro/collision": "^8.0",
@@ -36,8 +36,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Damarev\\FilamentLocationField\\": "src/",
-            "Damarev\\FilamentLocationField\\Database\\Factories\\": "database/factories/"
+            "Damarev\\FilamentLocationField\\": "src/"
         }
     },
     "autoload-dev": {
@@ -55,10 +54,7 @@
         "laravel": {
             "providers": [
                 "Damarev\\FilamentLocationField\\FilamentLocationFieldServiceProvider"
-            ],
-            "aliases": {
-                "FilamentLocationField": "Damarev\\FilamentLocationField\\Facades\\FilamentLocationField"
-            }
+            ]
         }
     },
     "config": {

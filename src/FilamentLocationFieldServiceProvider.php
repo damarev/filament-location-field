@@ -33,9 +33,7 @@ class FilamentLocationFieldServiceProvider extends PackageServiceProvider
             ->hasCommands($this->getCommands())
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command
-                    ->publishConfigFile()
-                    ->publishMigrations()
-                    ->askToRunMigrations();
+                    ->publishConfigFile();
             });
 
         $configFileName = $package->shortName();
@@ -44,9 +42,6 @@ class FilamentLocationFieldServiceProvider extends PackageServiceProvider
             $package->hasConfigFile();
         }
 
-        if (file_exists($package->basePath('/../database/migrations'))) {
-            $package->hasMigrations($this->getMigrations());
-        }
 
         if (file_exists($package->basePath('/../resources/lang'))) {
             $package->hasTranslations();
@@ -99,9 +94,10 @@ class FilamentLocationFieldServiceProvider extends PackageServiceProvider
     protected function getAssets(): array
     {
         return [
-            // AlpineComponent::make('filament-location-field', __DIR__ . '/../resources/dist/components/filament-location-field.js'),
-            // Css::make('filament-location-field-styles', __DIR__ . '/../resources/dist/filament-location-field.css'),
-            // Js::make('filament-location-field-scripts', __DIR__ . '/../resources/dist/filament-location-field.js'),
+            // Js::make('scripts', __DIR__ . '/../resources/dist/scripts.js'),
+            Css::make('styles', __DIR__ . '/../resources/dist/styles.css')->loadedOnRequest(),
+            AlpineComponent::make('location-form-field', __DIR__ . '/../resources/dist/location-form-field.js'),
+            AlpineComponent::make('location-infolist-entry', __DIR__ . '/../resources/dist/location-infolist-entry.js'),
         ];
     }
 

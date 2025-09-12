@@ -1,0 +1,126 @@
+<?php
+
+namespace Damarev\FilamentLocationField\Infolists\Components;
+
+use Closure;
+use Filament\Infolists\Components\Entry;
+
+class LocationEntry extends Entry
+{
+    protected string $view = 'filament-location-field::infolists.components.location-entry';
+
+    protected string | Closure $apiKey = '';
+
+    protected array | Closure | null $defaultLocation = [0, 0];
+
+    protected int | Closure $defaultZoom = 8;
+
+    protected array | Closure $mapControls = [];
+
+    protected string | Closure $height = '400px';
+
+    public array $controls = [
+        'mapTypeControl' => true,
+        'scaleControl' => true,
+        'streetViewControl' => true,
+        'rotateControl' => true,
+        'fullscreenControl' => true,
+        'zoomControl' => false,
+    ];
+
+    public function apiKey(string|Closure $apiKey): static
+    {
+        $this->apiKey = $apiKey;
+
+        return $this;
+    }
+
+    public function getApiKey(): string
+    {
+        return !empty($this->evaluate($this->apiKey))
+            ? $this->evaluate($this->apiKey)
+            : config('filament-location-field.api_key');
+    }
+
+    public function defaultLocation(array | Closure $defaultLocation): static
+    {
+        $this->defaultLocation = $defaultLocation;
+
+        return $this;
+    }
+
+    public function getDefaultLocation(): array
+    {
+        $position = $this->evaluate($this->defaultLocation);
+
+        if (is_array($position)) {
+            if (array_key_exists('lat', $position) && array_key_exists('lng', $position)) {
+                return $position;
+            } elseif (is_numeric($position[0]) && is_numeric($position[1])) {
+                return [
+                    'lat' => is_string($position[0]) ? round(floatval($position[0]), $this->precision) : $position[0],
+                    'lng' => is_string($position[1]) ? round(floatval($position[1]), $this->precision) : $position[1],
+                ];
+            }
+        }
+
+        return config('filament-location-field.default_location');
+    }
+
+    public function defaultZoom(int | Closure $defaultZoom): static
+    {
+        $this->defaultZoom = $defaultZoom;
+
+        return $this;
+    }
+
+    public function getDefaultZoom(): int
+    {
+        $zoom = $this->evaluate($this->defaultZoom);
+
+        if (is_numeric($zoom)) {
+            return $zoom;
+        }
+
+        return config('filament-location-field.default_zoom');
+    }
+
+    public function mapControls(array | Closure $controls): static
+    {
+        $this->mapControls = $controls;
+
+        return $this;
+    }
+
+    public function getMapControls(): array
+    {
+        $controls = $this->evaluate($this->mapControls) ?? [];
+
+        return array_merge($this->controls, $controls);
+    }
+
+    public function height(string | Closure $height): static
+    {
+        $this->height = $height;
+
+        return $this;
+    }
+
+    public function getHeight(): string
+    {
+        return $this->evaluate($this->height) ?? config('filament-location-field.default_height');
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function getMapConfig(): string
+    {
+        return json_encode([
+            'defaultLocation' => $this->getDefaultLocation(),
+            'defaultZoom' => $this->getDefaultZoom(),
+            'controls' => $this->getMapControls(),
+            'apiKey' => $this->getApiKey(),
+        ], JSON_THROW_ON_ERROR);
+    }
+}
