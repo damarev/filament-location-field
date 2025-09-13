@@ -7,10 +7,9 @@
         "filamentphp",
         "filament-location-field"
     ],
-    "version": "1.0.0",
+    "version": "1.0.2",
     "homepage": "https://github.com/damarev/filament-location-field",
     "support": {
-        "issues": "https://github.com/damarev/filament-location-field/issues",
         "source": "https://github.com/damarev/filament-location-field"
     },
     "license": "MIT",
@@ -65,6 +64,6 @@
             "phpstan/extension-installer": true
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }
