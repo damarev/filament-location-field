@@ -76,7 +76,7 @@ class FilamentLocationFieldServiceProvider extends PackageServiceProvider
     {
         return [
             // Js::make('scripts', __DIR__ . '/../resources/dist/scripts.js'),
-            Css::make('styles', __DIR__ . '/../resources/dist/styles.css')->loadedOnRequest(),
+            // Css::make('styles', __DIR__ . '/../resources/dist/styles.css')->loadedOnRequest(),
             AlpineComponent::make('location-form-field', __DIR__ . '/../resources/dist/location-form-field.js'),
             AlpineComponent::make('location-infolist-entry', __DIR__ . '/../resources/dist/location-infolist-entry.js'),
         ];
