@@ -7,7 +7,6 @@
         "filamentphp",
         "filament-location-field"
     ],
-    "version": "1.0.2",
     "homepage": "https://github.com/damarev/filament-location-field",
     "support": {
         "source": "https://github.com/damarev/filament-location-field"

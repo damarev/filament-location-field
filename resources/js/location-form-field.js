@@ -37,20 +37,6 @@ export default function locationFormField({ location, config }) {
             this.config = { ...this.config, ...config }
             this.loadGmaps()
             this.$watch('location', (value) => this.updateMapFromAlpine())
-
-            this.$refs.inputSearch.addEventListener('keydown', (event) => {
-                if (event.key === 'Enter') {
-                    event.preventDefault()
-                    console.log(`You entered: ${event.currentTarget.value}`)
-                    this.fetchGeolocation(event.currentTarget.value)
-                }
-            })
-
-            this.$refs.btnGeoaddress.addEventListener('click', (event) => {
-                event.preventDefault()
-                this.$refs.inputSearch.value = this.config.sourceAddress
-                this.fetchGeolocation(this.config.sourceAddress)
-            })
         },
 
         loadGmaps: function () {
@@ -65,6 +51,7 @@ export default function locationFormField({ location, config }) {
                 .then((google) => {
                     this.map = new google.maps.Map(this.$refs.map, {
                         center: this.getCoordinates(),
+                        disableDoubleClickZoom: true,
                         zoom: this.config.defaultZoom,
                         ...this.config.controls,
                     })
@@ -78,9 +65,13 @@ export default function locationFormField({ location, config }) {
                     this.marker.setPosition(this.getCoordinates())
                     this.setCoordinates(this.marker.getPosition())
 
+                    this.map.addListener('dblclick', (event) => {
+                        this.setMarkerLocation(event.latLng.toJSON())
+                    })
+
                     if (this.config.clickable) {
                         this.map.addListener('click', (event) => {
-                            this.markerMoved(event)
+                            this.setMarkerLocation(event.latLng.toJSON())
                         })
                     }
 
@@ -89,14 +80,9 @@ export default function locationFormField({ location, config }) {
                             this.marker,
                             'dragend',
                             (event) => {
-                                this.markerMoved(event)
+                                this.setMarkerLocation(event.latLng.toJSON())
                             },
                         )
-                    }
-
-                    if (!this.config.sourceAddress) {
-                        this.$refs.btnGeoaddress.style.display = 'none'
-                        // mapTools.appendChild(this.createFindmeButton())
                     }
 
                     // const mapTools = document.createElement('div')
@@ -131,22 +117,21 @@ export default function locationFormField({ location, config }) {
                 })
         },
 
-        markerMoved: function (event) {
-            this.markerLocation = event.latLng.toJSON()
-            this.setCoordinates(this.markerLocation)
-            this.marker.setPosition(this.markerLocation)
-            this.map.panTo(this.markerLocation)
+        handleSearchSubmit: function (event) {
+            console.log(`You entered: ${event.target.value}`)
+            this.fetchGeolocation(event.target.value)
         },
 
-        setMarkerLocation: function (lat, lng) {
-            this.markerLocation = {
-                lat,
-                lng,
-            }
-            this.setCoordinates(this.markerLocation)
-            this.marker.setPosition(this.markerLocation)
-            this.map.panTo(this.markerLocation)
-            this.map.setZoom(18)
+        handleGeoAddress: function (event) {
+            this.$refs.searchInput.value = this.config.sourceAddress
+            this.fetchGeolocation(this.config.sourceAddress)
+        },
+
+        setMarkerLocation: function (location) {
+            this.markerLocation = location
+            this.setCoordinates(location)
+            this.marker.setPosition(location)
+            this.map.panTo(location)
         },
 
         updateMapFromAlpine: function () {
@@ -176,8 +161,7 @@ export default function locationFormField({ location, config }) {
                 .then((data) => {
                     if (data.status === 'OK') {
                         this.setMarkerLocation(
-                            data.results[0].geometry.location.lat,
-                            data.results[0].geometry.location.lng,
+                            data.results[0].geometry.location,
                         )
                     } else {
                         throw new Error('ERROR: No results!')
@@ -189,13 +173,13 @@ export default function locationFormField({ location, config }) {
                 })
         },
 
-        updateMap: function (position) {
-            this.marker.setPosition(position)
-            this.map.panTo(position)
+        updateMap: function (location) {
+            this.marker.setlocation(location)
+            this.map.panTo(location)
         },
 
-        setCoordinates: function (position) {
-            this.$wire.set(this.config.statePath, position)
+        setCoordinates: function (location) {
+            this.$wire.set(this.config.statePath, location)
         },
 
         getCoordinates: function () {

@@ -7,6 +7,8 @@ use Filament\Infolists\Components\Entry;
 
 class LocationEntry extends Entry
 {
+    private int $precision = 8;
+
     protected string $view = 'filament-location-field::infolists.components.location-entry';
 
     protected string | Closure $apiKey = '';

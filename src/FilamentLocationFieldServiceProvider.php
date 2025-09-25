@@ -30,7 +30,6 @@ class FilamentLocationFieldServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package->name(static::$name)
-            ->hasCommands($this->getCommands())
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command
                     ->publishConfigFile();
@@ -41,7 +40,6 @@ class FilamentLocationFieldServiceProvider extends PackageServiceProvider
         if (file_exists($package->basePath("/../config/{$configFileName}.php"))) {
             $package->hasConfigFile();
         }
-
 
         if (file_exists($package->basePath('/../resources/lang'))) {
             $package->hasTranslations();
@@ -62,23 +60,6 @@ class FilamentLocationFieldServiceProvider extends PackageServiceProvider
             $this->getAssetPackageName()
         );
 
-        FilamentAsset::registerScriptData(
-            $this->getScriptData(),
-            $this->getAssetPackageName()
-        );
-
-        // Icon Registration
-        FilamentIcon::register($this->getIcons());
-
-        // Handle Stubs
-        if (app()->runningInConsole()) {
-            foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
-                $this->publishes([
-                    $file->getRealPath() => base_path("stubs/filament-location-field/{$file->getFilename()}"),
-                ], 'filament-location-field-stubs');
-            }
-        }
-
         // Testing
         Testable::mixin(new TestsFilamentLocationField);
     }
@@ -98,50 +79,6 @@ class FilamentLocationFieldServiceProvider extends PackageServiceProvider
             Css::make('styles', __DIR__ . '/../resources/dist/styles.css')->loadedOnRequest(),
             AlpineComponent::make('location-form-field', __DIR__ . '/../resources/dist/location-form-field.js'),
             AlpineComponent::make('location-infolist-entry', __DIR__ . '/../resources/dist/location-infolist-entry.js'),
-        ];
-    }
-
-    /**
-     * @return array<class-string>
-     */
-    protected function getCommands(): array
-    {
-        return [
-            FilamentLocationFieldCommand::class,
-        ];
-    }
-
-    /**
-     * @return array<string>
-     */
-    protected function getIcons(): array
-    {
-        return [];
-    }
-
-    /**
-     * @return array<string>
-     */
-    protected function getRoutes(): array
-    {
-        return [];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    protected function getScriptData(): array
-    {
-        return [];
-    }
-
-    /**
-     * @return array<string>
-     */
-    protected function getMigrations(): array
-    {
-        return [
-            // 'create_filament-location-field_table',
         ];
     }
 }

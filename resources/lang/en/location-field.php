@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'search_by_address' => 'Search by address',
+    'search_address' => 'Search address',
     'geolocate_address' => 'Geolocate address',
 ];
